@@ -14,11 +14,11 @@ const createUser = async (req, res) => {
         });
     } catch (error) {
         console.error("Something went wrong on controller layer");
-        return res.status(400).json({
+        return res.status(error.statusCode).json({
             success: false,
             message: error.message,
             data: {},
-            err: error 
+            err: error.explanation 
         });
     }
 }
@@ -35,11 +35,11 @@ const signIn = async (req, res) => {
             data: {accessToken: token}
         });
     } catch (error) {
-        return res.status(400).json({
+        return res.status(error.statusCode).json({
             success: false,
-            message: 'Something went wrong!',
+            message: error.message,
             data: {},
-            err: error 
+            err: error.explanation 
         });
     }
 }

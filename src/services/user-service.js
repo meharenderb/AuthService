@@ -35,10 +35,6 @@ class UserService {
     async signIn(email, plainPassword){
         try {
             const user = await this.userRepo.getUserByEmail(email);
-            
-            if(!user){
-                throw {error: 'User not found with this email.'}
-            }
 
             const passwordMatch = await this.comparePassword(plainPassword, user.password);
             
@@ -51,6 +47,9 @@ class UserService {
             
             return accessToken;
         } catch (error) {
+            // if(error.name === 'AttributeNotFound'){
+            //     throw error;
+            // }
             console.error("Something went wrong on service layer");
             throw error;
         }
