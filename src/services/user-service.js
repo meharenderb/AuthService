@@ -22,9 +22,9 @@ class UserService {
         try {            
             const token = await jwt.sign({
                 data: user, 
-                iat: Math.floor(Date.now() / 1000) - 30,
-                exp: Math.floor(Date.now() / 1000) + (60)
-            }, JWT_KEY, { algorithm: 'HS256' });            
+                iat: Math.floor(Date.now() / 1000),
+                // exp: Math.floor(Date.now() / 1000) + (15)
+            }, JWT_KEY, { algorithm: 'HS256', expiresIn: 15});            
             return token;
         } catch (error) {
             console.error("Something went wrong on service layer", error);
@@ -60,6 +60,17 @@ class UserService {
         try {
             const isVerified = bcrypt.compareSync(plainPassword, dbPassword);
             return isVerified;
+        } catch (error) {
+            console.error("Something went wrong on service layer");
+            throw error;
+        }
+    }
+
+    async isAdmin(userId){
+        try {
+            const isAdmin = await this.userRepo.isAdmin(userId);    
+                       
+            return isAdmin;
         } catch (error) {
             console.error("Something went wrong on service layer");
             throw error;

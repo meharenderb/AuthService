@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken');
 const { JWT_KEY } = require('../config/serverConfig');
 
-const authMiddleware = async (req, res, next) => {
+const authenticateUser = (req, res, next) => {
 	try {
 		const authHeader = req.headers.authorization;
 
 		if (!authHeader || !authHeader.startsWith('Bearer ')) {
 			return res.status(401).json({
-				status: false,
+				success: false,
 				message: 'Authentication token is required to access this resource.',
 				data: {},
 			});
@@ -28,18 +28,30 @@ const authMiddleware = async (req, res, next) => {
 			}
 
 			return res.status(401).json({
-				status: false,
+				success: false,
 				message: errorMessage,
 				data: {},
 			});
 		}
 	} catch (error) {
 		return res.status(500).json({
-			status: false,
+			success: false,
 			message: 'Internal server error.',
 			data: {},
 		});
 	}
 };
 
-module.exports = authMiddleware;
+const validateIsAdminRequest = (req, res, next) => {
+	if(!req.body.id){
+		return res.status(400).json({
+			success: false,
+			message: 'Something went wrong!',
+			data: {},
+			err: "User id not given"
+		});
+	}
+	next();
+}
+
+module.exports = {authenticateUser, validateIsAdminRequest};
